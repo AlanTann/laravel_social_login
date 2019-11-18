@@ -35,8 +35,11 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
+        // This is for api
         $this->mapApiRoutes();
 
+        //This is for frontend route
+        //Disable this if this laravel repository is use for api only
         $this->mapWebRoutes();
 
         //
