@@ -3,13 +3,13 @@
 namespace App\Abstracts;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\App;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use App\Interfaces\RepositoryInterface;
 
-// Pixlr Market Aerospike
+// Pixlr Market Aerospike and Cache
+// use Illuminate\Support\Facades\Cache;
 // use App\Acme\AerospikeCacheKeyGenerator;
 
 abstract class AbstractRepository implements RepositoryInterface
@@ -28,10 +28,10 @@ abstract class AbstractRepository implements RepositoryInterface
      */
     protected $query_builder;
 
-    /**
-     * @var string
-     */
-    protected $cache_key;
+    // /**
+    //  * @var string
+    //  */
+    // protected $cache_key;
 
     /**
      * @var bool
@@ -45,15 +45,15 @@ abstract class AbstractRepository implements RepositoryInterface
      */
     protected $cache_duration = 10080;
 
-    /**
-     * @var array
-     */
-    protected $where_column = [];
+    // /**
+    //  * @var array
+    //  */
+    // protected $where_column = [];
 
-    /**
-     * @var array
-     */
-    protected $select_column = [];
+    // /**
+    //  * @var array
+    //  */
+    // protected $select_column = [];
 
     /**
      * Force every repository class has to init $model when want to use.
@@ -324,25 +324,25 @@ abstract class AbstractRepository implements RepositoryInterface
         return $this->model->getTable().'.'.$column;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getCacheKey()
-    {
-        return $this->cache_key;
-    }
+    // /**
+    //  * @return string|null
+    //  */
+    // public function getCacheKey()
+    // {
+    //     return $this->cache_key;
+    // }
 
-    /**
-     * @param string $cache_key
-     */
-    public function setCacheKey(string $cache_key)
-    {
-        $this->cache_key = $cache_key;
-    }
+    // /**
+    //  * @param string $cache_key
+    //  */
+    // public function setCacheKey(string $cache_key)
+    // {
+    //     $this->cache_key = $cache_key;
+    // }
 
-    /**
-     * @return string
-     */
+    // /**
+    //  * @return string
+    //  */
     //Pixlr Market Aerospike
     // protected function generateCacheKey()
     // {
@@ -350,63 +350,63 @@ abstract class AbstractRepository implements RepositoryInterface
     //     $this->setCacheKey($cache_key);
     // }
 
-    /**
-     * @param $value
-     *
-     * @return bool
-     */
-    public function putCache($value)
-    {
-        return Cache::put($this->cache_key, $value, $this->cache_duration);
-    }
+    // /**
+    //  * @param $value
+    //  *
+    //  * @return bool
+    //  */
+    // public function putCache($value)
+    // {
+    //     return Cache::put($this->cache_key, $value, $this->cache_duration);
+    // }
 
-    /**
-     * @return array|null
-     */
-    public function getCache()
-    {
-        return Cache::get($this->cache_key);
-    }
+    // /**
+    //  * @return array|null
+    //  */
+    // public function getCache()
+    // {
+    //     return Cache::get($this->cache_key);
+    // }
 
-    /**
-     * Get the value of enable_cache.
-     *
-     * @return bool
-     */
-    public function getEnableCache()
-    {
-        return $this->enable_cache;
-    }
+    // /**
+    //  * Get the value of enable_cache.
+    //  *
+    //  * @return bool
+    //  */
+    // public function getEnableCache()
+    // {
+    //     return $this->enable_cache;
+    // }
 
-    /**
-     * Set the value of enable_cache.
-     *
-     * @param bool $enable_cache
-     */
-    public function setEnableCache(bool $enable_cache)
-    {
-        $this->enable_cache = $enable_cache;
-    }
+    // /**
+    //  * Set the value of enable_cache.
+    //  *
+    //  * @param bool $enable_cache
+    //  */
+    // public function setEnableCache(bool $enable_cache)
+    // {
+    //     $this->enable_cache = $enable_cache;
+    // }
 
-    /**
-     * Get duration in minutes.
-     *
-     * @return int
-     */
-    public function getCacheDuration()
-    {
-        return $this->cache_duration;
-    }
+    // /**
+    //  * Get duration in minutes.
+    //  *
+    //  * @return int
+    //  */
+    // public function getCacheDuration()
+    // {
+    //     return $this->cache_duration;
+    // }
 
-    /**
-     * Set duration in minutes.
-     *
-     * @param int $cache_duration Duration in minutes
-     */
-    public function setCacheDuration(int $cache_duration)
-    {
-        $this->cache_duration = $cache_duration;
-    }
+    // /**
+    //  * Set duration in minutes.
+    //  *
+    //  * @param int $cache_duration Duration in minutes
+    //  */
+    // public function setCacheDuration(int $cache_duration)
+    // {
+    //     $this->cache_duration = $cache_duration;
+    // }
 
     /**
      * @param int $limit
