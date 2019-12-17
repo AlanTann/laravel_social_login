@@ -21,6 +21,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('redirect', 'UserController@redirect');
+Route::get('callback', 'UserController@callback');
+
 Route::post('login', 'UserController@login');
 Route::post('register', 'UserController@register');
 

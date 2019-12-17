@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Validator;
+use Socialite;
 
 class UserController extends Controller
 {
@@ -65,5 +66,36 @@ class UserController extends Controller
     {
         $user = Auth::user();
         return response()->json(['success' => $user], $this-> successStatus);
+    }
+
+    public function redirect()
+    {
+        // return Socialite::driver('google')->redirect();
+        return Socialite::driver('google')->stateless()->redirect();
+    }
+
+    public function callback()
+    {
+        // try {
+        //     $googleUser = Socialite::driver('google')->user();
+        //     $existUser = User::where('email',$googleUser->email)->first();
+
+        //     if($existUser) {
+        //         Auth::loginUsingId($existUser->id);
+        //     }
+        //     else {
+        //         $user = new User;
+        //         $user->name = $googleUser->name;
+        //         $user->email = $googleUser->email;
+        //         $user->google_id = $googleUser->id;
+        //         $user->password = md5(rand(1,10000));
+        //         $user->save();
+        //         Auth::loginUsingId($user->id);
+        //     }
+        //     return redirect()->to('/home');
+        // } 
+        // catch (Exception $e) {
+        //     return 'error';
+        // }
     }
 }
