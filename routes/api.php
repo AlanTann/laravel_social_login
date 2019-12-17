@@ -21,10 +21,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::prefix('login')->group(function () {
+    Route::post('/', 'UserController@login');
+});
+
 Route::get('redirect', 'UserController@redirect');
 Route::get('callback', 'UserController@callback');
 
-Route::post('login', 'UserController@login');
 Route::post('register', 'UserController@register');
 
 Route::group(['middleware' => 'auth:api'], function(){
