@@ -23,10 +23,9 @@ Route::get('/', function () {
 
 Route::prefix('login')->group(function () {
     Route::post('/', 'UserController@login');
+    Route::get('{login_type}/redirect', 'UserController@redirect');
+    Route::get('{login_type}/callback', 'UserController@callback');
 });
-
-Route::get('redirect', 'UserController@redirect');
-Route::get('callback', 'UserController@callback');
 
 Route::post('register', 'UserController@register');
 
