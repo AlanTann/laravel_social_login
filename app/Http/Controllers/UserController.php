@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use Socialite;
+use DB;
 
 class UserController extends Controller
 {
@@ -70,8 +71,23 @@ class UserController extends Controller
 
     public function redirect()
     {
-        // return Socialite::driver('google')->redirect();
         return Socialite::driver('google')->stateless()->redirect();
+    }
+
+    public function logout(string $type)
+    {
+        $access_token = Auth::user()->token();
+
+        if($type == "all") {
+            DB::table('oauth_refresh_tokens')
+                ->where('access_token_id', $access_token->id)
+                ->update([
+                    'revoked' => true
+                ]);
+        }
+
+        $access_token->revoke();
+        return 'logged out';
     }
 
     public function callback()
@@ -93,7 +109,7 @@ class UserController extends Controller
         //         Auth::loginUsingId($user->id);
         //     }
         //     return redirect()->to('/home');
-        // } 
+        // }
         // catch (Exception $e) {
         //     return 'error';
         // }
