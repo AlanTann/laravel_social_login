@@ -74,11 +74,12 @@ class UserController extends Controller
         return Socialite::driver('google')->stateless()->redirect();
     }
 
-    public function logout(string $type)
+    public function logout(string $logout_type)
     {
         $access_token = Auth::user()->token();
 
-        if($type == "all") {
+        //logout from all device if the logout type is all
+        if($logout_type == "all") {
             DB::table('oauth_refresh_tokens')
                 ->where('access_token_id', $access_token->id)
                 ->update([
