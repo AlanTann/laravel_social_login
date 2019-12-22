@@ -33,15 +33,14 @@ class ResetPasswordController extends Controller
     /**
      * Reset the given user's password.
      *
-     * @param  \Illuminate\Contracts\Auth\CanResetPassword|User|ServiceUser $user
-     * @param  string                                                       $password
+     * @param  Request $request
      */
     protected function resetPassword(Request $request)
     {
         $user = Auth::user();
         $user->password = bcrypt($request->password);
         $user->save();
-        /** @noinspection PhpUndefinedMethodInspection */
+
         $success['token'] =  $user->createToken('MyApp')-> accessToken;
 
         return response()->json(['success' => $success], Response::HTTP_OK);
