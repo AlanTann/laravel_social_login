@@ -24,6 +24,10 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::prefix('password')->group(function () {
         Route::post('reset', 'Auth\ResetPasswordController@resetPassword');
     });
+
+    Route::prefix('email')->group(function () {
+        Route::post('reset', 'UserController@resetEmail');
+    });
 });
 
 Route::get('/', function () {

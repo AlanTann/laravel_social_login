@@ -1,13 +1,14 @@
 <?php
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\User;
-use Illuminate\Support\Facades\Auth;
+use DB;
 use Validator;
 use Socialite;
-use DB;
+use App\User;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -90,6 +91,23 @@ class UserController extends Controller
         $access_token->revoke();
         return 'logged out';
     }
+
+    /**
+     * Reset the given user's email.
+     *
+     * @param  Request $request
+     */
+    protected function resetEmail(Request $request)
+    {
+        $user = Auth::user();
+        $user->email = $request->email;
+        $user->save();
+
+        $success['token'] =  $user->createToken('MyApp')-> accessToken;
+
+        return response()->json(['success' => $success], Response::HTTP_OK);
+    }
+
 
     public function callback()
     {
