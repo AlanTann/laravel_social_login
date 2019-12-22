@@ -20,6 +20,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group(['middleware' => 'auth:api'], function(){
     Route::post('details', 'UserController@details');
     Route::post('logout/{logout_type}', 'UserController@logout');
+
+    Route::prefix('password')->group(function () {
+        Route::post('reset', 'Auth\ResetPasswordController@resetPassword');
+    });
 });
 
 Route::get('/', function () {
@@ -33,3 +37,6 @@ Route::prefix('login')->group(function () {
 });
 
 Route::post('register', 'UserController@register');
+
+//Forget Password/Reset Email/Verify Email/Send Verification Email
+//Password verify
