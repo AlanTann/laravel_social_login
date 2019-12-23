@@ -122,11 +122,9 @@ class UserController extends Controller
     public function callback(string $login_type)
     {
         try {
-            // var_dump('hi');exit();
-            $user = Socialite::driver('github')->stateless()->user();
-            // $user = Socialite::driver('github')->user();
+            $socialite_user = Socialite::driver('github')->stateless()->user();
 
-            return $user;
+            return $socialite_user;
 
             // $user = Socialite::driver($login_type)->user();
             // var_dump($user);exit();
