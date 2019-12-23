@@ -42,5 +42,6 @@ Route::prefix('login')->group(function () {
 
 Route::post('register', 'UserController@register');
 
-//Forget Password/Reset Email/Verify Email/Send Verification Email
+//Forget Password/Verify Email/Send Verification Email
 //Password verify
+//Send email(register, reset password, reset email)
