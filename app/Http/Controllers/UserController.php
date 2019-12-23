@@ -70,9 +70,19 @@ class UserController extends Controller
         return response()->json(['success' => $user], $this-> successStatus);
     }
 
-    public function redirect()
+    public function redirect(string $login_type)
     {
-        return Socialite::driver('google')->stateless()->redirect();
+        try{
+            return Socialite::driver($login_type)->stateless()->redirect();
+        } catch (\Exception $ex) {
+            return response()->json([
+                'errors' => [
+                    'code' => $ex->getCode(),
+                    'title' => 'Internal Server Error',
+                    'detail' => $ex->getMessage(),
+                ],
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function logout(string $logout_type)
@@ -109,28 +119,40 @@ class UserController extends Controller
     }
 
 
-    public function callback()
+    public function callback(string $login_type)
     {
-        // try {
-        //     $googleUser = Socialite::driver('google')->user();
-        //     $existUser = User::where('email',$googleUser->email)->first();
+        try {
+            // var_dump('hi');exit();
+            $user = Socialite::driver('github')->stateless()->user();
+            // $user = Socialite::driver('github')->user();
 
-        //     if($existUser) {
-        //         Auth::loginUsingId($existUser->id);
-        //     }
-        //     else {
-        //         $user = new User;
-        //         $user->name = $googleUser->name;
-        //         $user->email = $googleUser->email;
-        //         $user->google_id = $googleUser->id;
-        //         $user->password = md5(rand(1,10000));
-        //         $user->save();
-        //         Auth::loginUsingId($user->id);
-        //     }
-        //     return redirect()->to('/home');
-        // }
-        // catch (Exception $e) {
-        //     return 'error';
-        // }
+            return $user;
+
+            // $user = Socialite::driver($login_type)->user();
+            // var_dump($user);exit();
+            // $existUser = User::where('email',$googleUser->email)->first();
+
+            // if($existUser) {
+            //     Auth::loginUsingId($existUser->id);
+            // }
+            // else {
+            //     $user = new User;
+            //     $user->name = $googleUser->name;
+            //     $user->email = $googleUser->email;
+            //     $user->google_id = $googleUser->id;
+            //     $user->password = md5(rand(1,10000));
+            //     $user->save();
+            //     Auth::loginUsingId($user->id);
+            // }
+            // return redirect()->to('/home');
+        } catch (\Exception $ex) {
+            return response()->json([
+                'errors' => [
+                    'code' => $ex->getCode(),
+                    'title' => 'Internal Server Error',
+                    'detail' => $ex->getMessage(),
+                ],
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
