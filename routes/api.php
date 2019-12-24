@@ -42,6 +42,11 @@ Route::prefix('login')->group(function () {
 
 Route::post('register', 'UserController@register');
 
+Route::prefix('test')->group(function () {
+    // Route::get('mail', 'TestController@testSendGridEmail');
+});
+
+
 //Forget Password/Verify Email/Send Verification Email
 //Password verify
 //Send email(register, reset password, reset email)
