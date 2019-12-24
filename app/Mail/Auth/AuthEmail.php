@@ -23,8 +23,8 @@ class AuthEmail extends AbstractMailable
     public function build()
     {
         $address = 'janeexampexample@example.com';
-        $subject = 'This is a demo!';
-        $name = 'Jane Doe';
+        $subject = 'Authentication Subject Email';
+        $name = 'Alan Tan';
 
         //Add your views path here
         return $this->view('emails.auth.authemail')
@@ -33,6 +33,9 @@ class AuthEmail extends AbstractMailable
                     ->bcc($address, $name)
                     ->replyTo($address, $name)
                     ->subject($subject)
-                    ->with([ 'test_message' => $this->data['message'] ]);
+                    ->with([
+                        'title' => $this->data['title'],
+                        'email_message' => $this->data['message']
+                    ]);
     }
 }

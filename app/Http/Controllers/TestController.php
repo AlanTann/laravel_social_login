@@ -15,9 +15,12 @@ use Illuminate\Http\Request;
 class TestController extends Controller
 {
     public function testSendGridEmail() {
-        echo 'hi';
-        $data = ['message' => 'This is a test!'];
+        $data = [
+            'title' => 'Title test',
+            'message' => 'This is a test!'
+        ];
 
         Mail::to('tan_alan1020@hotmail.com')->send(new AuthEmail($data));
+        return response()->json(['success'=>true], Response::HTTP_OK);
     }
 }

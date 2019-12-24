@@ -4,7 +4,7 @@
     		<meta charset="utf-8">
     	</head>
     	<body>
-    		<h2>Auth Email</h2>
-    		<p>{{ $test_message }}</p>
+    		<h2>{{ $title }}</h2>
+    		<p>{{ $email_message }}</p>
     	</body>
     </html>
