@@ -22,13 +22,23 @@ class UserController extends Controller
      */
     public function login()
     {
-        if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){
-            $user = Auth::user();
-            $success['token'] =  $user->createToken('MyApp')-> accessToken;
-            return response()->json(['success' => $success], $this-> successStatus);
-        }
-        else{
-            return response()->json(['error'=>'Unauthorised'], 401);
+        try{
+            if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){
+                $user = Auth::user();
+                $success['token'] =  $user->createToken('MyApp')-> accessToken;
+                return response()->json(['success' => $success], $this-> successStatus);
+            }
+            else{
+                return response()->json(['error'=>'Unauthorised'], 401);
+            }
+        } catch (\Exception $ex) {
+            return response()->json([
+                'errors' => [
+                    'code' => $ex->getCode(),
+                    'title' => 'Internal Server Error',
+                    'detail' => $ex->getMessage(),
+                ],
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -39,24 +49,34 @@ class UserController extends Controller
      */
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required',
-            'c_password' => 'required|same:password',
-        ]);
+        try{
+            $validator = Validator::make($request->all(), [
+                'name' => 'required',
+                'email' => 'required|email',
+                'password' => 'required',
+                'c_password' => 'required|same:password',
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json(['error'=>$validator->errors()], 401);
+            if ($validator->fails()) {
+                return response()->json(['error'=>$validator->errors()], 401);
+            }
+
+            $input = $request->all();
+                    $input['password'] = bcrypt($input['password']);
+                    $user = User::create($input);
+                    $success['token'] =  $user->createToken('MyApp')-> accessToken;
+                    $success['name'] =  $user->name;
+
+            return response()->json(['success'=>$success], $this-> successStatus);
+        } catch (\Exception $ex) {
+            return response()->json([
+                'errors' => [
+                    'code' => $ex->getCode(),
+                    'title' => 'Internal Server Error',
+                    'detail' => $ex->getMessage(),
+                ],
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        $input = $request->all();
-                $input['password'] = bcrypt($input['password']);
-                $user = User::create($input);
-                $success['token'] =  $user->createToken('MyApp')-> accessToken;
-                $success['name'] =  $user->name;
-
-        return response()->json(['success'=>$success], $this-> successStatus);
     }
 
     /**
@@ -66,8 +86,18 @@ class UserController extends Controller
      */
     public function details()
     {
-        $user = Auth::user();
-        return response()->json(['success' => $user], $this-> successStatus);
+        try {
+            $user = Auth::user();
+            return response()->json(['success' => $user], $this-> successStatus);
+        } catch (\Exception $ex) {
+            return response()->json([
+                'errors' => [
+                    'code' => $ex->getCode(),
+                    'title' => 'Internal Server Error',
+                    'detail' => $ex->getMessage(),
+                ],
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function redirect(string $login_type)
@@ -87,19 +117,29 @@ class UserController extends Controller
 
     public function logout(string $logout_type)
     {
-        $access_token = Auth::user()->token();
+        try{
+            $access_token = Auth::user()->token();
 
-        //logout from all device if the logout type is all
-        if($logout_type == "all") {
-            DB::table('oauth_refresh_tokens')
-                ->where('access_token_id', $access_token->id)
-                ->update([
-                    'revoked' => true
-                ]);
+            //logout from all device if the logout type is all
+            if($logout_type == "all") {
+                DB::table('oauth_refresh_tokens')
+                    ->where('access_token_id', $access_token->id)
+                    ->update([
+                        'revoked' => true
+                    ]);
+            }
+
+            $access_token->revoke();
+            return 'logged out';
+        } catch (\Exception $ex) {
+            return response()->json([
+                'errors' => [
+                    'code' => $ex->getCode(),
+                    'title' => 'Internal Server Error',
+                    'detail' => $ex->getMessage(),
+                ],
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        $access_token->revoke();
-        return 'logged out';
     }
 
     /**
@@ -109,40 +149,46 @@ class UserController extends Controller
      */
     protected function resetEmail(Request $request)
     {
-        $user = Auth::user();
-        $user->email = $request->email;
-        $user->save();
+        try {
+            $user = Auth::user();
+            $user->email = $request->email;
+            $user->save();
 
-        $success['token'] =  $user->createToken('MyApp')-> accessToken;
+            $success['token'] =  $user->createToken('MyApp')-> accessToken;
 
-        return response()->json(['success' => $success], Response::HTTP_OK);
+            return response()->json(['success' => $success], Response::HTTP_OK);
+        } catch (\Exception $ex) {
+            return response()->json([
+                'errors' => [
+                    'code' => $ex->getCode(),
+                    'title' => 'Internal Server Error',
+                    'detail' => $ex->getMessage(),
+                ],
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
 
     public function callback(string $login_type)
     {
         try {
-            $socialite_user = Socialite::driver('github')->stateless()->user();
+            $socialite_user = Socialite::driver($login_type)->stateless()->user();
 
-            return $socialite_user;
+            $exist_user = User::where('email',$socialite_user->email)->first();
 
-            // $user = Socialite::driver($login_type)->user();
-            // var_dump($user);exit();
-            // $existUser = User::where('email',$googleUser->email)->first();
+            if($exist_user) {
+                $success['token'] =  $exist_user->createToken('MyApp')-> accessToken;
+            } else {
+                $user = new User;
+                $user->name = $socialite_user->name;
+                $user->email = $socialite_user->email;
+                // $user->google_id = $socialite_user->id;
+                $user->password = bcrypt(rand(1,10000));
+                $user->save();
+                $success['token'] =  $user->createToken('MyApp')-> accessToken;
+            }
 
-            // if($existUser) {
-            //     Auth::loginUsingId($existUser->id);
-            // }
-            // else {
-            //     $user = new User;
-            //     $user->name = $googleUser->name;
-            //     $user->email = $googleUser->email;
-            //     $user->google_id = $googleUser->id;
-            //     $user->password = md5(rand(1,10000));
-            //     $user->save();
-            //     Auth::loginUsingId($user->id);
-            // }
-            // return redirect()->to('/home');
+            return response()->json(['success' => $success], $this-> successStatus);
         } catch (\Exception $ex) {
             return response()->json([
                 'errors' => [
