@@ -2,16 +2,24 @@
 namespace App\Http\Controllers;
 
 use DB;
+use Mail;
 use Validator;
 use Socialite;
 use App\User;
+use App\Mail\Auth\AuthEmail;
 use App\Http\Controllers\Controller;
+// use Illuminate\Notifications\Notifiable;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 
+// class UserController extends Authenticatable implements MustVerifyEmail
 class UserController extends Controller
 {
+    use Notifiable;
+
     public $successStatus = 200;
 
 
@@ -22,13 +30,12 @@ class UserController extends Controller
      */
     public function login()
     {
-        try{
-            if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){
+        try {
+            if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
                 $user = Auth::user();
                 $success['token'] =  $user->createToken('MyApp')-> accessToken;
                 return response()->json(['success' => $success], $this-> successStatus);
-            }
-            else{
+            } else {
                 return response()->json(['error'=>'Unauthorised'], 401);
             }
         } catch (\Exception $ex) {
@@ -49,7 +56,7 @@ class UserController extends Controller
      */
     public function register(Request $request)
     {
-        try{
+        try {
             $validator = Validator::make($request->all(), [
                 'name' => 'required',
                 'email' => 'required|email',
@@ -62,10 +69,10 @@ class UserController extends Controller
             }
 
             $input = $request->all();
-                    $input['password'] = bcrypt($input['password']);
-                    $user = User::create($input);
-                    $success['token'] =  $user->createToken('MyApp')-> accessToken;
-                    $success['name'] =  $user->name;
+            $input['password'] = bcrypt($input['password']);
+            $user = User::create($input);
+            $success['token'] =  $user->createToken('MyApp')-> accessToken;
+            $success['name'] =  $user->name;
 
             return response()->json(['success'=>$success], $this-> successStatus);
         } catch (\Exception $ex) {
@@ -102,7 +109,7 @@ class UserController extends Controller
 
     public function redirect(string $login_type)
     {
-        try{
+        try {
             return Socialite::driver($login_type)->stateless()->redirect();
         } catch (\Exception $ex) {
             return response()->json([
@@ -117,11 +124,11 @@ class UserController extends Controller
 
     public function logout(string $logout_type)
     {
-        try{
+        try {
             $access_token = Auth::user()->token();
 
             //logout from all device if the logout type is all
-            if($logout_type == "all") {
+            if ($logout_type == "all") {
                 DB::table('oauth_refresh_tokens')
                     ->where('access_token_id', $access_token->id)
                     ->update([
@@ -174,16 +181,16 @@ class UserController extends Controller
         try {
             $socialite_user = Socialite::driver($login_type)->stateless()->user();
 
-            $exist_user = User::where('email',$socialite_user->email)->first();
+            $exist_user = User::where('email', $socialite_user->email)->first();
 
-            if($exist_user) {
+            if ($exist_user) {
                 $success['token'] =  $exist_user->createToken('MyApp')-> accessToken;
             } else {
                 $user = new User;
                 $user->name = $socialite_user->name;
                 $user->email = $socialite_user->email;
                 // $user->google_id = $socialite_user->id;
-                $user->password = bcrypt(rand(1,10000));
+                $user->password = bcrypt(rand(1, 10000));
                 $user->save();
                 $success['token'] =  $user->createToken('MyApp')-> accessToken;
             }
