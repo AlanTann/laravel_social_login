@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use DB;
@@ -33,10 +34,10 @@ class UserController extends Controller
         try {
             if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
                 $user = Auth::user();
-                $success['token'] =  $user->createToken('MyApp')-> accessToken;
-                return response()->json(['success' => $success], $this-> successStatus);
+                $success['token'] =  $user->createToken('MyApp')->accessToken;
+                return response()->json(['success' => $success], $this->successStatus);
             } else {
-                return response()->json(['error'=>'Unauthorised'], 401);
+                return response()->json(['error' => 'Unauthorised'], 401);
             }
         } catch (\Exception $ex) {
             return response()->json([
@@ -65,16 +66,16 @@ class UserController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json(['error'=>$validator->errors()], 401);
+                return response()->json(['error' => $validator->errors()], 401);
             }
 
             $input = $request->all();
             $input['password'] = bcrypt($input['password']);
             $user = User::create($input);
-            $success['token'] =  $user->createToken('MyApp')-> accessToken;
+            $success['token'] =  $user->createToken('MyApp')->accessToken;
             $success['name'] =  $user->name;
 
-            return response()->json(['success'=>$success], $this-> successStatus);
+            return response()->json(['success' => $success], $this->successStatus);
         } catch (\Exception $ex) {
             return response()->json([
                 'errors' => [
@@ -95,7 +96,7 @@ class UserController extends Controller
     {
         try {
             $user = Auth::user();
-            return response()->json(['success' => $user], $this-> successStatus);
+            return response()->json(['success' => $user], $this->successStatus);
         } catch (\Exception $ex) {
             return response()->json([
                 'errors' => [
@@ -161,7 +162,7 @@ class UserController extends Controller
             $user->email = $request->email;
             $user->save();
 
-            $success['token'] =  $user->createToken('MyApp')-> accessToken;
+            $success['token'] =  $user->createToken('MyApp')->accessToken;
 
             return response()->json(['success' => $success], Response::HTTP_OK);
         } catch (\Exception $ex) {
@@ -184,7 +185,7 @@ class UserController extends Controller
             $exist_user = User::where('email', $socialite_user->email)->first();
 
             if ($exist_user) {
-                $success['token'] =  $exist_user->createToken('MyApp')-> accessToken;
+                $success['token'] =  $exist_user->createToken('MyApp')->accessToken;
             } else {
                 $user = new User;
                 $user->name = $socialite_user->name;
@@ -192,10 +193,10 @@ class UserController extends Controller
                 // $user->google_id = $socialite_user->id;
                 $user->password = bcrypt(rand(1, 10000));
                 $user->save();
-                $success['token'] =  $user->createToken('MyApp')-> accessToken;
+                $success['token'] =  $user->createToken('MyApp')->accessToken;
             }
 
-            return response()->json(['success' => $success], $this-> successStatus);
+            return response()->json(['success' => $success], $this->successStatus);
         } catch (\Exception $ex) {
             return response()->json([
                 'errors' => [
