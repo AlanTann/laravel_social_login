@@ -18,7 +18,7 @@ use Illuminate\Http\Request;
 // class UserController extends Authenticatable implements MustVerifyEmail
 class UserController extends Controller
 {
-    use Notifiable;
+    // use Notifiable;
 
     public $successStatus = 200;
 
