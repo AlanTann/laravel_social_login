@@ -8,9 +8,9 @@ class AuthenticationService
 {
     public function sendEmail($title, $message, $email_address)
     {
-        $title = "Title test";
-        $message = "This is a test!";
-        $email_address = "tan_alan1020@hotmail.com";
+        // $title = "Title test";
+        // $message = "This is a test!";
+        // $email_address = "tan_alan1020@hotmail.com";
 
         $data = [
             'title' => $title,
