@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use DB;
-use Mail;
 use Validator;
 use Socialite;
 use App\User;
-use App\Mail\Auth\AuthEmail;
+use App\Services\AuthenticationService;
 use App\Http\Controllers\Controller;
 // use Illuminate\Notifications\Notifiable;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -74,6 +73,8 @@ class UserController extends Controller
             $user = User::create($input);
             $success['token'] =  $user->createToken('MyApp')->accessToken;
             $success['name'] =  $user->name;
+
+            app(AuthenticationService::class)->sendEmail('register tite', 'register message', $request->email);
 
             return response()->json(['success' => $success], $this->successStatus);
         } catch (\Exception $ex) {
