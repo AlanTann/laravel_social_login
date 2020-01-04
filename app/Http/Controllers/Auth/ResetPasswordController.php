@@ -62,4 +62,21 @@ class ResetPasswordController extends Controller
 
         return response()->json(['error' => 'ERRORRR'], 401);
     }
+
+    /**
+     * Verify the tokwn and email is match
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function verifyToken(Request $request)
+    {
+        $user = DB::table('users')->where('email', '=', $request->email)->where('token', '=', '$request->token')->first();
+
+        if ($user) {
+            return response()->json(['success' => true], Response::HTTP_OK);
+        }
+
+        return response()->json(['error' => 'ERRORRR'], 401);
+    }
 }
