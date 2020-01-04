@@ -9,13 +9,11 @@ use App\User;
 use App\Services\AuthenticationService;
 use App\Http\Controllers\Controller;
 // use Illuminate\Notifications\Notifiable;
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 // use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 
-// class UserController extends Authenticatable implements MustVerifyEmail
 class UserController extends Controller
 {
     // use Notifiable;
@@ -28,9 +26,13 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function login()
+    public function login(User $user)
     {
         try {
+            if (!$user->hasVerifiedEmail()) {
+                return response()->json(['error' => 'Unverified'], 401);
+            }
+
             if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
                 $user = Auth::user();
                 $success['token'] =  $user->createToken('MyApp')->accessToken;
