@@ -42,8 +42,10 @@ Route::prefix('login')->group(function () {
 
 Route::post('register', 'UserController@register');
 
-Route::prefix('forget')->group(function () {
-    Route::post('pssword/reset', 'Auth\ForgotPasswordController@forgotPasswordFromEmail');
+Route::prefix('password')->group(function () {
+    Route::post('forget/email/send', 'Auth\ForgotPasswordController@forgotPasswordFromEmail');
+    Route::post('forget/verify', 'Auth\ForgotPasswordController@verifyToken');
+    Route::post('forget/reset','Auth\ResetPasswordController@forgotPasswordFromEmail');
 });
 
 Route::prefix('test')->group(function () {

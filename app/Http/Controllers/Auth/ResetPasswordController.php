@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use DB;
 use Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
@@ -44,5 +45,21 @@ class ResetPasswordController extends Controller
         $success['token'] =  $user->createToken('MyApp')-> accessToken;
 
         return response()->json(['success' => $success], Response::HTTP_OK);
+    }
+
+    protected function resetPasswordFromForget(Request $request)
+    {
+        $user = DB::table('users')->where('email', '=', $request->email)->where('token', '=', '$request->token')->first();
+
+        if ($user) {
+            $user->password = bcrypt($request->password);
+            $user->save();
+
+            $success['token'] =  $user->createToken('MyApp')-> accessToken;
+
+            return response()->json(['success' => $success], Response::HTTP_OK);
+        }
+
+        return response()->json(['error' => 'ERRORRR'], 401);
     }
 }
