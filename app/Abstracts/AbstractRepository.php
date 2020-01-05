@@ -33,17 +33,17 @@ abstract class AbstractRepository implements RepositoryInterface
     //  */
     // protected $cache_key;
 
-    /**
-     * @var bool
-     */
-    protected $enable_cache = false;
+    // /**
+    //  * @var bool
+    //  */
+    // protected $enable_cache = false;
 
-    /**
-     * Duration in minutes.
-     *
-     * @var int
-     */
-    protected $cache_duration = 10080;
+    // /**
+    //  * Duration in minutes.
+    //  *
+    //  * @var int
+    //  */
+    // protected $cache_duration = 10080;
 
     // /**
     //  * @var array
@@ -77,11 +77,11 @@ abstract class AbstractRepository implements RepositoryInterface
     public function find()
     {
         $this->unsetBuilder();
-        if (App::isLocal()){
-            $this->query_builder = $this->model->on('thelink')->newQuery();
-        } else{
+        // if (App::isLocal()) {
+        //     $this->query_builder = $this->model->on('thelink')->newQuery();
+        // } else {
             $this->query_builder = $this->model->query();
-        }
+        // }
 
         return $this;
     }
@@ -110,19 +110,19 @@ abstract class AbstractRepository implements RepositoryInterface
     public function first()
     {
         //go through the Aerospike flow if enable_cache is true
-        if ($this->enable_cache) {
-            $this->generateCacheKey();
-            $model_cache = $this->getCache();
+        // if ($this->enable_cache) {
+        //     $this->generateCacheKey();
+        //     $model_cache = $this->getCache();
 
-            if (isset($model_cache)) {
-                $model = unserialize(base64_decode($model_cache));
+        //     if (isset($model_cache)) {
+        //         $model = unserialize(base64_decode($model_cache));
 
-                return $model;
-            } else {
-                $model = base64_encode(serialize($this->query_builder->first()));
-                $this->putCache($model);
-            }
-        }
+        //         return $model;
+        //     } else {
+        //         $model = base64_encode(serialize($this->query_builder->first()));
+        //         $this->putCache($model);
+        //     }
+        // }
 
         return $this->query_builder->first();
     }
@@ -177,7 +177,7 @@ abstract class AbstractRepository implements RepositoryInterface
      */
     public function updateOrInsert(AbstractModel $model)
     {
-        $model->setConnection('master');
+        // $model->setConnection('master');
         return $model->save();
     }
 
@@ -188,7 +188,7 @@ abstract class AbstractRepository implements RepositoryInterface
      */
     public function update(AbstractModel $model)
     {
-        $model->setConnection('master');
+        // $model->setConnection('master');
         return $model->update();
     }
 
