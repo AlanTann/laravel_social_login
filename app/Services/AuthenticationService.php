@@ -3,7 +3,8 @@ namespace App\Services;
 
 use Mail;
 use App\Mail\Auth\AuthEmail;
-
+// use App\Repositories\UserRepository;
+// use App\Repositories\PasswordResetRepository;
 class AuthenticationService
 {
     public function sendEmail($title, $message, $email_address)
