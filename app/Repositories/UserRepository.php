@@ -5,7 +5,7 @@ namespace App\Repositories;
 use App\Abstracts\AbstractRepository;
 use App\User;
 
-class PasswordResetRepository extends AbstractRepository
+class UserRepository extends AbstractRepository
 {
     public function __construct()
     {
