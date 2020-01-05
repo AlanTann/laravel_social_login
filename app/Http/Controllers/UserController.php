@@ -18,9 +18,6 @@ class UserController extends Controller
 {
     // use Notifiable;
 
-    public $successStatus = 200;
-
-
     /**
      * login api
      *
@@ -37,7 +34,7 @@ class UserController extends Controller
                 }
 
                 $success['token'] =  $user->createToken('MyApp')->accessToken;
-                return response()->json(['success' => $success], $this->successStatus);
+                return response()->json(['success' => $success], Response::HTTP_OK);
             } else {
                 return response()->json(['error' => 'Unauthorised'], 401);
             }
@@ -79,7 +76,7 @@ class UserController extends Controller
 
             app(AuthenticationService::class)->sendEmail('register tite', 'register message', $request->email);
 
-            return response()->json(['success' => $success], $this->successStatus);
+            return response()->json(['success' => $success], Response::HTTP_OK);
         } catch (\Exception $ex) {
             return response()->json([
                 'errors' => [
@@ -100,7 +97,7 @@ class UserController extends Controller
     {
         try {
             $user = Auth::user();
-            return response()->json(['success' => $user], $this->successStatus);
+            return response()->json(['success' => $user], Response::HTTP_OK);
         } catch (\Exception $ex) {
             return response()->json([
                 'errors' => [
@@ -200,7 +197,7 @@ class UserController extends Controller
                 $success['token'] =  $user->createToken('MyApp')->accessToken;
             }
 
-            return response()->json(['success' => $success], $this->successStatus);
+            return response()->json(['success' => $success], Response::HTTP_OK);
         } catch (\Exception $ex) {
             return response()->json([
                 'errors' => [
