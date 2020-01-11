@@ -42,14 +42,18 @@ Route::prefix('login')->group(function () {
 
 Route::post('register', 'UserController@register');
 
+Route::prefix('email')->group(function () {
+    Route::post('verify', 'Auth\VerificationController@verifyUser');
+});
+
 Route::prefix('password')->group(function () {
     Route::post('forget/email/send', 'Auth\ForgotPasswordController@forgotPasswordFromEmail');
     Route::post('forget/verify', 'Auth\ResetPasswordController@verifyToken');
-    Route::post('forget/reset','Auth\ResetPasswordController@forgotPasswordFromEmail');
+    Route::post('forget/reset', 'Auth\ResetPasswordController@forgotPasswordFromEmail');
 });
 
 Route::prefix('test')->group(function () {
-    // Route::get('mail', 'TestController@testSendGridEmail');
+    // Route::get('test', 'TestController@testSignature');
 });
 
 
