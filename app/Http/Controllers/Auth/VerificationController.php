@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use DB;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -38,14 +39,14 @@ class VerificationController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
         $this->middleware('signed')->only('verify');
         $this->middleware('throttle:6,1')->only('verify', 'resend');
     }
 
     public function verifyUser(Request $request)
     {
-        $user = DB::table('users')->where('email', '=', $request->email)->first();
+        $user = User::where('email', '=', $request->email)->first();
 
         $user->email_verified_at = Carbon::now();
         $user->save();

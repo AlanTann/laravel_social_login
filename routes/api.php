@@ -43,7 +43,8 @@ Route::prefix('login')->group(function () {
 Route::post('register', 'UserController@register');
 
 Route::prefix('email')->group(function () {
-    Route::post('verify', 'Auth\VerificationController@verifyUser');
+    Route::post('verify', 'Auth\VerificationController@verifyUser')
+        ->name('verifyEmail')->middleware('signed');
 });
 
 Route::prefix('password')->group(function () {
@@ -53,7 +54,7 @@ Route::prefix('password')->group(function () {
 });
 
 Route::prefix('test')->group(function () {
-    // Route::get('test', 'TestController@testSignature');
+    // Route::get('test', 'TestController@testVerifySignature');
 });
 
 
