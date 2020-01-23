@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 // use Illuminate\Notifications\Notifiable;
 // use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 
@@ -74,7 +75,9 @@ class UserController extends Controller
             $success['token'] =  $user->createToken('MyApp')->accessToken;
             $success['name'] =  $user->name;
 
-            app(AuthenticationService::class)->sendEmail('register tite', 'register message', $request->email);
+            $verification_url = Url::signedRoute('verifyEmail', ['email' => $request->email]);
+
+            app(AuthenticationService::class)->sendEmail('register tite', $verification_url, $request->email);
 
             return response()->json(['success' => $success], Response::HTTP_OK);
         } catch (\Exception $ex) {
