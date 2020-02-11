@@ -9,6 +9,7 @@ use App\User;
 use UrlSigner;
 use App\Http\Controllers\Controller;
 use App\Mail\Auth\AuthEmail;
+use App\Services\AuthenticationService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Http\Response;
@@ -31,5 +32,14 @@ class TestController extends Controller
     {
         var_dump(Url::signedRoute('verifyEmail', ['email' => 'harold3@gmail.com']));
         exit;
+    }
+
+    public function testCheckEmailExist()
+    {
+        $auth_service = new AuthenticationService();
+
+        $email_exist_result = $auth_service->checkEmailExist('harold3@gmail.com');
+        var_dump($email_exist_result);
+        exit();
     }
 }

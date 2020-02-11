@@ -54,7 +54,7 @@ Route::prefix('password')->group(function () {
 });
 
 Route::prefix('test')->group(function () {
-    // Route::get('test', 'TestController@testVerifySignature');
+    // Route::get('test', 'TestController@testCheckEmailExist');
 });
 
 
