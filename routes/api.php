@@ -48,8 +48,8 @@ Route::prefix('email')->group(function () {
 });
 
 Route::prefix('password')->group(function () {
-    Route::post('forget/email/send', 'Auth\ForgotPasswordController@forgotPasswordFromEmail');
-    Route::post('forget/verify', 'Auth\ResetPasswordController@verifyToken');
+    // Route::post('forget/email/send', 'Auth\ForgotPasswordController@forgotPasswordFromEmail');
+    // Route::post('forget/verify', 'Auth\ResetPasswordController@verifyToken');
     Route::post('forget/reset', 'Auth\ResetPasswordController@forgetPassword');
 });
 

@@ -44,7 +44,7 @@ class ResetPasswordController extends Controller
         $user->password = bcrypt($request->password);
         $user->save();
 
-        $success['token'] =  $user->createToken('MyApp')-> accessToken;
+        $success['token'] =  $user->createToken('LoginApp')-> accessToken;
 
         return response()->json(['success' => $success], Response::HTTP_OK);
     }

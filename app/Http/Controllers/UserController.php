@@ -35,7 +35,7 @@ class UserController extends Controller
                     return response()->json(['error' => 'Unverified'], 401);
                 }
 
-                $success['token'] =  $user->createToken('MyApp')->accessToken;
+                $success['token'] =  $user->createToken('LoginApp')->accessToken;
                 return response()->json(['success' => $success], Response::HTTP_OK);
             } else {
                 return response()->json(['error' => 'Unauthorised'], 401);
@@ -77,7 +77,7 @@ class UserController extends Controller
             $input = $request->all();
             $input['password'] = bcrypt($input['password']);
             $user = User::create($input);
-            $success['token'] =  $user->createToken('MyApp')->accessToken;
+            $success['token'] =  $user->createToken('LoginApp')->accessToken;
             $success['name'] =  $user->name;
 
             $verification_url = Url::signedRoute('verifyEmail', ['email' => $request->email]);
@@ -169,9 +169,14 @@ class UserController extends Controller
         try {
             $user = Auth::user();
             $user->email = $request->email;
+            $user->email_verified_at = null;
             $user->save();
 
-            $success['token'] =  $user->createToken('MyApp')->accessToken;
+            $verification_url = Url::signedRoute('verifyEmail', ['email' => $request->email]);
+
+            app(AuthenticationService::class)->sendEmail('Reset Email', $verification_url, $request->email);
+
+            $success['token'] =  $user->createToken('LoginApp')->accessToken;
 
             return response()->json(['success' => $success], Response::HTTP_OK);
         } catch (\Exception $ex) {
@@ -194,7 +199,7 @@ class UserController extends Controller
             $exist_user = User::where('email', $socialite_user->email)->first();
 
             if ($exist_user) {
-                $success['token'] =  $exist_user->createToken('MyApp')->accessToken;
+                $success['token'] =  $exist_user->createToken('LoginApp')->accessToken;
             } else {
                 $user = new User;
                 $user->name = $socialite_user->name;
@@ -202,7 +207,7 @@ class UserController extends Controller
                 // $user->google_id = $socialite_user->id;
                 $user->password = bcrypt(rand(1, 10000));
                 $user->save();
-                $success['token'] =  $user->createToken('MyApp')->accessToken;
+                $success['token'] =  $user->createToken('LoginApp')->accessToken;
             }
 
             return response()->json(['success' => $success], Response::HTTP_OK);
