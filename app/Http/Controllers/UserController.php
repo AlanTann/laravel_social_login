@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use DB;
 use Validator;
 use Socialite;
+use Carbon\Carbon;
+use App\Enums\LoginType;
 use App\User;
 use App\Services\AuthenticationService;
 use App\Http\Controllers\Controller;
@@ -204,8 +206,10 @@ class UserController extends Controller
                 $user = new User;
                 $user->name = $socialite_user->name;
                 $user->email = $socialite_user->email;
-                // $user->google_id = $socialite_user->id;
+                $user->social_type = LoginType::getValue(strtoupper($login_type));
+                $user->social_id = $socialite_user->id;
                 $user->password = bcrypt(rand(1, 10000));
+                $user->email_verified_at = Carbon::now();
                 $user->save();
                 $success['token'] =  $user->createToken('LoginApp')->accessToken;
             }

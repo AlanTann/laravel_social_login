@@ -6,12 +6,12 @@ use BenSampo\Enum\Enum;
 
 final class LoginType extends Enum
 {
-    const EMAIL = "EMAIL";
-    const FACEBOOK = "FACEBOOK";
-    const TWITTER = "TWITTER";
-    const LINKEDIN = "LINKEDIN";
-    const GOOGLE = "GOOGLE";
-    const GITHUB = "GITHUB";
-    const GITLAB = "GITLAB";
-    const BITBUCKET = "BITBUCKET";
+    const EMAIL = 1;
+    const FACEBOOK = 2;
+    const TWITTER = 3;
+    const LINKEDIN = 4;
+    const GOOGLE = 5;
+    const GITHUB = 6;
+    const GITLAB = 7;
+    const BITBUCKET = 8;
 }
