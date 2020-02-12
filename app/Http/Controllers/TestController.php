@@ -36,9 +36,7 @@ class TestController extends Controller
 
     public function testCheckEmailExist()
     {
-        $auth_service = new AuthenticationService();
-
-        $email_exist_result = $auth_service->checkEmailExist('harold3@gmail.com');
+        $email_exist_result = app(AuthenticationService::class)->checkEmailExist('harold3@gmail.com');
         var_dump($email_exist_result);
         exit();
     }

@@ -11,8 +11,7 @@ class AuthenticationService
 {
     public function checkEmailExist(string $email)
     {
-        $user = new User();
-        $email_exist = $user->where('email', $email)->first();
+        $email_exist = app(User::class)->where('email', $email)->first();
         return !$email_exist ? false: true;
     }
 

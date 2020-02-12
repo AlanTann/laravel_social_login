@@ -69,6 +69,10 @@ class UserController extends Controller
                 return response()->json(['error' => $validator->errors()], 401);
             }
 
+            if (app(AuthenticationService::class)->checkEmailExist($request->email)) {
+                return response()->json(['error' => 'Email Existed'], 401);
+            }
+
             $input = $request->all();
             $input['password'] = bcrypt($input['password']);
             $user = User::create($input);
