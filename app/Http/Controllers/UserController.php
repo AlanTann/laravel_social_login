@@ -31,6 +31,7 @@ class UserController extends Controller
                 $user = Auth::user();
 
                 if (!$user->hasVerifiedEmail()) {
+                    Url::signedRoute('verifyEmail', ['email' => $user->email]);
                     return response()->json(['error' => 'Unverified'], 401);
                 }
 
@@ -81,7 +82,7 @@ class UserController extends Controller
 
             $verification_url = Url::signedRoute('verifyEmail', ['email' => $request->email]);
 
-            app(AuthenticationService::class)->sendEmail('register tite', $verification_url, $request->email);
+            app(AuthenticationService::class)->sendEmail('register title', $verification_url, $request->email);
 
             return response()->json(['success' => $success], Response::HTTP_OK);
         } catch (\Exception $ex) {

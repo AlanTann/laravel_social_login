@@ -43,14 +43,14 @@ Route::prefix('login')->group(function () {
 Route::post('register', 'UserController@register');
 
 Route::prefix('email')->group(function () {
-    Route::post('verify', 'Auth\VerificationController@verifyUser')
+    Route::get('verify', 'Auth\VerificationController@verifyUser')
         ->name('verifyEmail')->middleware('signed');
 });
 
 Route::prefix('password')->group(function () {
     Route::post('forget/email/send', 'Auth\ForgotPasswordController@forgotPasswordFromEmail');
     Route::post('forget/verify', 'Auth\ResetPasswordController@verifyToken');
-    Route::post('forget/reset', 'Auth\ResetPasswordController@forgotPasswordFromEmail');
+    Route::post('forget/reset', 'Auth\ResetPasswordController@forgetPassword');
 });
 
 Route::prefix('test')->group(function () {

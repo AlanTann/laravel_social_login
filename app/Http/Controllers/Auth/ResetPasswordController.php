@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use DB;
 use Auth;
+use App\User;
 use App\Http\Controllers\Controller;
+use App\Services\AuthenticationService;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -47,15 +49,23 @@ class ResetPasswordController extends Controller
         return response()->json(['success' => $success], Response::HTTP_OK);
     }
 
-    protected function resetPasswordFromForget(Request $request)
+    protected function forgetPassword(Request $request)
     {
-        $user = DB::table('users')->where('email', '=', $request->email)->where('token', '=', '$request->token')->first();
+        if (!app(AuthenticationService::class)->checkEmailExist($request->email)) {
+            return response()->json(['error' => 'Email Not Exist'], 401);
+        }
+
+        $user = app(User::class)->where('email', '=', $request->email)->first();
 
         if ($user) {
-            $user->password = bcrypt($request->password);
+            $password = str_random(8);
+            $user->password = bcrypt($password);
             $user->save();
 
-            $success['token'] =  $user->createToken('MyApp')-> accessToken;
+            $email_description = "This is your new password: $password. Please login to the website to reset to another password.";
+            app(AuthenticationService::class)->sendEmail('Forget Password', $email_description, $request->email);
+
+            $success = "true";
 
             return response()->json(['success' => $success], Response::HTTP_OK);
         }
