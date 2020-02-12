@@ -25,9 +25,9 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('reset', 'Auth\ResetPasswordController@resetPassword');
     });
 
-    Route::prefix('email')->group(function () {
-        Route::post('reset', 'UserController@resetEmail');
-    });
+    // Route::prefix('email')->group(function () {
+    //     Route::post('reset', 'UserController@resetEmail');
+    // });
 });
 
 Route::get('/', function () {
@@ -56,8 +56,3 @@ Route::prefix('password')->group(function () {
 Route::prefix('test')->group(function () {
     // Route::get('test', 'TestController@testCheckEmailExist');
 });
-
-
-//Forget Password/Verify Email/Send Verification Email
-//Password verify
-//Send email(register, reset password, reset email)
