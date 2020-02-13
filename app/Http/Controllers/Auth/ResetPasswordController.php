@@ -55,7 +55,7 @@ class ResetPasswordController extends Controller
             return response()->json(['error' => 'Email Not Exist'], 401);
         }
 
-        $user = app(User::class)->where('email', '=', $request->email)->first();
+        $user = User::where('email', '=', $request->email)->first();
 
         if ($user) {
             $password = str_random(8);
@@ -81,7 +81,7 @@ class ResetPasswordController extends Controller
      */
     public function verifyToken(Request $request)
     {
-        $user = DB::table('users')->where('email', '=', $request->email)->where('token', '=', '$request->token')->first();
+        $user = User::where('email', '=', $request->email)->where('token', '=', '$request->token')->first();
 
         if ($user) {
             return response()->json(['success' => true], Response::HTTP_OK);
